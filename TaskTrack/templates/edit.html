@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Assignment | TaskTrack</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="icon" href="data:,">
+</head>
+<body>
+<header class="site-header">
+    <div class="header-content">
+        <div class="logo">TaskTrack</div>
+        <p>Student Assignment &amp; Deadline Management</p>
+    </div>
+</header>
+
+<main class="container narrow">
+    <section class="panel">
+        <div class="section-heading">
+            <div>
+                <h1>Edit assignment</h1>
+                <p>Update the details and save your changes.</p>
+            </div>
+        </div>
+
+        {% if request.args.get('error') == 'invalid' %}
+            <div class="notice error" role="alert">
+                Please enter a title, subject, and valid due date.
+            </div>
+        {% endif %}
+
+        <form action="{{ url_for('edit', task_id=task.id) }}" method="POST">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+            <div class="form-group">
+                <label for="title">Assignment title *</label>
+                <input id="title" name="title" type="text" maxlength="120"
+                       value="{{ task.title }}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="subject">Subject *</label>
+                <input id="subject" name="subject" type="text" maxlength="80"
+                       value="{{ task.subject }}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="due_date">Due date *</label>
+                <input id="due_date" name="due_date" type="date"
+                       value="{{ task.due_date }}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="description">Description (optional)</label>
+                <textarea id="description" name="description" rows="4"
+                          maxlength="1000">{{ task.description or '' }}</textarea>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="button primary">Save changes</button>
+                <a href="{{ url_for('index') }}" class="button secondary">Cancel</a>
+            </div>
+        </form>
+    </section>
+</main>
+
+<footer>
+    <p>TaskTrack · A Student Software Engineering Project</p>
+</footer>
+</body>
+</html>

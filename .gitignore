@@ -1,0 +1,12 @@
+# Python
+__pycache__/
+*.pyc
+venv/
+.venv/
+
+# Local database (created automatically when the app runs)
+*.db
+
+# Older presentation draft (TaskTrack_Presentation_Final.pptx is the current one)
+TaskTrack_Presentation.pptx
+~$*.pptx

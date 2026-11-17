@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaskTrack | Assignment Manager</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="icon" href="data:,">
+    <script src="{{ url_for('static', filename='script.js') }}" defer></script>
+</head>
+<body>
+<header class="site-header">
+    <div class="header-content">
+        <div class="logo">TaskTrack</div>
+        <p>Student Assignment &amp; Deadline Management</p>
+    </div>
+</header>
+
+<main class="container">
+    {% if request.args.get('message') %}
+        <div class="notice success" role="status">
+            {% if request.args.get('message') == 'added' %}Assignment added successfully.
+            {% elif request.args.get('message') == 'updated' %}Assignment updated successfully.
+            {% elif request.args.get('message') == 'deleted' %}Assignment deleted successfully.
+            {% else %}Assignment status updated.{% endif %}
+        </div>
+    {% endif %}
+    {% if request.args.get('error') == 'invalid' %}
+        <div class="notice error" role="alert">
+            Please enter a title, subject, and valid due date.
+        </div>
+    {% endif %}
+
+    <section class="welcome">
+        <div>
+            <h1>My Assignments</h1>
+            <p>Plan your work and keep track of deadlines.</p>
+        </div>
+        <span class="today">Today: {{ today }}</span>
+    </section>
+
+    <section class="summary-grid" aria-label="Assignment summary">
+        <article class="summary-card">
+            <span class="summary-label">Total assignments</span>
+            <strong>{{ total }}</strong>
+        </article>
+        <article class="summary-card">
+            <span class="summary-label">Pending</span>
+            <strong>{{ pending }}</strong>
+        </article>
+        <article class="summary-card">
+            <span class="summary-label">Completed</span>
+            <strong>{{ completed }}</strong>
+        </article>
+        <article class="summary-card">
+            <span class="summary-label">Overdue</span>
+            <strong>{{ overdue }}</strong>
+        </article>
+    </section>
+
+    <section class="panel">
+        <div class="section-heading">
+            <div>
+                <h2>Add an assignment</h2>
+                <p>Enter the assignment details below.</p>
+            </div>
+        </div>
+
+        <form action="{{ url_for('add') }}" method="POST" class="assignment-form">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="title">Assignment title *</label>
+                    <input id="title" name="title" type="text" maxlength="120"
+                           placeholder="e.g. Software Engineering report" required>
+                </div>
+                <div class="form-group">
+                    <label for="subject">Subject *</label>
+                    <input id="subject" name="subject" type="text" maxlength="80"
+                           placeholder="e.g. Software Engineering" required>
+                </div>
+                <div class="form-group">
+                    <label for="due_date">Due date *</label>
+                    <input id="due_date" name="due_date" type="date" required>
+                </div>
+                <div class="form-group full-width">
+                    <label for="description">Description (optional)</label>
+                    <textarea id="description" name="description" rows="3" maxlength="1000"
+                              placeholder="Add a few notes about this assignment"></textarea>
+                </div>
+            </div>
+            <button type="submit" class="button primary">+ Add assignment</button>
+        </form>
+    </section>
+
+    <section class="panel">
+        <div class="section-heading">
+            <div>
+                <h2>Assignment list</h2>
+                <p>Your assignments are ordered by due date.</p>
+            </div>
+            <input id="searchInput" class="search-input" type="search"
+                   placeholder="Search assignments..." aria-label="Search assignments">
+        </div>
+
+        {% if tasks %}
+        <div class="table-wrapper">
+            <table id="assignmentTable">
+                <thead>
+                    <tr>
+                        <th>Assignment</th>
+                        <th>Subject</th>
+                        <th>Due date</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for task in tasks %}
+                    <tr>
+                        <td class="assignment-title">
+                            <strong>{{ task.title }}</strong>
+                            {% if task.description %}
+                                <small>{{ task.description }}</small>
+                            {% endif %}
+                        </td>
+                        <td>{{ task.subject }}</td>
+                        <td>{{ task.due_date }}</td>
+                        <td>
+                            {% if task.status == 'Completed' %}
+                                <span class="status completed">Completed</span>
+                            {% elif task.due_date < today %}
+                                <span class="status overdue">Overdue</span>
+                            {% else %}
+                                <span class="status pending">Pending</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div class="action-group">
+                                <a class="button small secondary"
+                                   href="{{ url_for('edit', task_id=task.id) }}">Edit</a>
+
+                                <form action="{{ url_for('toggle', task_id=task.id) }}"
+                                      method="POST" class="inline-form">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    <button type="submit" class="button small success">
+                                        {% if task.status == 'Completed' %}Reopen{% else %}Complete{% endif %}
+                                    </button>
+                                </form>
+
+                                <form action="{{ url_for('delete', task_id=task.id) }}"
+                                      method="POST" class="inline-form delete-form">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    <button type="submit" class="button small danger">Delete</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <p id="noResults" class="empty-message hidden">No assignments match your search.</p>
+        {% else %}
+            <div class="empty-state">
+                <div class="empty-icon">✓</div>
+                <h3>No assignments yet</h3>
+                <p>Add your first assignment using the form above.</p>
+            </div>
+        {% endif %}
+    </section>
+</main>
+
+<footer>
+    <p>TaskTrack · A Student Software Engineering Project</p>
+</footer>
+</body>
+</html>

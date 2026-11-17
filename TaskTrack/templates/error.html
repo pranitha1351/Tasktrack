@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error {{ code }} | TaskTrack</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="icon" href="data:,">
+</head>
+<body>
+<header class="site-header">
+    <div class="header-content">
+        <div class="logo">TaskTrack</div>
+        <p>Student Assignment &amp; Deadline Management</p>
+    </div>
+</header>
+<main class="container narrow">
+    <section class="panel empty-state">
+        <h1>Error {{ code }}</h1>
+        <p>{{ message }}</p>
+        <a class="button primary" href="{{ url_for('index') }}">Return to dashboard</a>
+    </section>
+</main>
+</body>
+</html>

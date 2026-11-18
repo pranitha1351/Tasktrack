@@ -5,7 +5,8 @@ import secrets
 from datetime import date
 
 app = Flask(__name__)
-app.secret_key = "change-this-secret-key-before-deployment"
+# On a hosting server, set the SECRET_KEY environment variable to a long random value.
+app.secret_key = os.environ.get("SECRET_KEY", "change-this-secret-key-before-deployment")
 # Keep the database next to app.py no matter which folder the server is started from.
 DB_NAME = os.path.join(os.path.dirname(os.path.abspath(__file__)), "tasks.db")
 

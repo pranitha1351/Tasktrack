@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaskTrack | Assignment Manager</title>
+    <link rel="icon" href="data:,">
+    <link rel="stylesheet" href="style.css">
+    <script src="app.js" defer></script>
+</head>
+<body>
+<header class="site-header">
+    <div class="header-content">
+        <div class="logo">TaskTrack</div>
+        <p>Student Assignment &amp; Deadline Management</p>
+    </div>
+</header>
+
+<!-- Dashboard view -->
+<main class="container" id="dashboardView">
+    <div id="notice" class="notice hidden" role="status"></div>
+
+    <section class="welcome">
+        <div>
+            <h1>My Assignments</h1>
+            <p>Plan your work and keep track of deadlines.</p>
+        </div>
+        <span class="today" id="today"></span>
+    </section>
+
+    <section class="summary-grid" aria-label="Assignment summary">
+        <article class="summary-card">
+            <span class="summary-label">Total assignments</span>
+            <strong id="countTotal">0</strong>
+        </article>
+        <article class="summary-card">
+            <span class="summary-label">Pending</span>
+            <strong id="countPending">0</strong>
+        </article>
+        <article class="summary-card">
+            <span class="summary-label">Completed</span>
+            <strong id="countCompleted">0</strong>
+        </article>
+        <article class="summary-card">
+            <span class="summary-label">Overdue</span>
+            <strong id="countOverdue">0</strong>
+        </article>
+    </section>
+
+    <section class="panel">
+        <div class="section-heading">
+            <div>
+                <h2>Add an assignment</h2>
+                <p>Enter the assignment details below.</p>
+            </div>
+        </div>
+
+        <form id="addForm" class="assignment-form" novalidate>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="title">Assignment title *</label>
+                    <input id="title" name="title" type="text" maxlength="120"
+                           placeholder="e.g. Software Engineering report" required>
+                </div>
+                <div class="form-group">
+                    <label for="subject">Subject *</label>
+                    <input id="subject" name="subject" type="text" maxlength="80"
+                           placeholder="e.g. Software Engineering" required>
+                </div>
+                <div class="form-group">
+                    <label for="due_date">Due date *</label>
+                    <input id="due_date" name="due_date" type="date" required>
+                </div>
+                <div class="form-group full-width">
+                    <label for="description">Description (optional)</label>
+                    <textarea id="description" name="description" rows="3" maxlength="1000"
+                              placeholder="Add a few notes about this assignment"></textarea>
+                </div>
+            </div>
+            <button type="submit" class="button primary">+ Add assignment</button>
+        </form>
+    </section>
+
+    <section class="panel">
+        <div class="section-heading">
+            <div>
+                <h2>Assignment list</h2>
+                <p>Your assignments are ordered by due date.</p>
+            </div>
+            <input id="searchInput" class="search-input" type="search"
+                   placeholder="Search assignments..." aria-label="Search assignments">
+        </div>
+
+        <div class="table-wrapper" id="tableWrapper">
+            <table id="assignmentTable">
+                <thead>
+                    <tr>
+                        <th>Assignment</th>
+                        <th>Subject</th>
+                        <th>Due date</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="assignmentRows"></tbody>
+            </table>
+        </div>
+        <p id="noResults" class="empty-message hidden">No assignments match your search.</p>
+        <div class="empty-state hidden" id="emptyState">
+            <div class="empty-icon">✓</div>
+            <h3>No assignments yet</h3>
+            <p>Add your first assignment using the form above.</p>
+        </div>
+    </section>
+</main>
+
+<!-- Edit view -->
+<main class="container narrow hidden" id="editView">
+    <section class="panel">
+        <div class="section-heading">
+            <div>
+                <h1>Edit assignment</h1>
+                <p>Update the details and save your changes.</p>
+            </div>
+        </div>
+
+        <div id="editNotice" class="notice error hidden" role="alert">
+            Please enter a title, subject, and valid due date.
+        </div>
+
+        <form id="editForm" novalidate>
+            <div class="form-group">
+                <label for="edit_title">Assignment title *</label>
+                <input id="edit_title" name="title" type="text" maxlength="120" required>
+            </div>
+            <div class="form-group">
+                <label for="edit_subject">Subject *</label>
+                <input id="edit_subject" name="subject" type="text" maxlength="80" required>
+            </div>
+            <div class="form-group">
+                <label for="edit_due_date">Due date *</label>
+                <input id="edit_due_date" name="due_date" type="date" required>
+            </div>
+            <div class="form-group">
+                <label for="edit_description">Description (optional)</label>
+                <textarea id="edit_description" name="description" rows="4" maxlength="1000"></textarea>
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="button primary">Save changes</button>
+                <a href="#" class="button secondary">Cancel</a>
+            </div>
+        </form>
+    </section>
+</main>
+
+<footer>
+    <p>TaskTrack · A Student Software Engineering Project · by pranitha1351</p>
+</footer>
+</body>
+</html>
